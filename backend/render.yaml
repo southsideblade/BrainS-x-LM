@@ -1,0 +1,27 @@
+databases:
+  - name: brainsxlm-db
+    databaseName: brainsxlm
+    user: brainsxlm
+    region: oregon
+
+services:
+  - type: web
+    name: brainsxlm-api
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: brainsxlm-db
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: WEAVIATE_URL
+        sync: false
+      - key: WEAVIATE_API_KEY
+        sync: false
